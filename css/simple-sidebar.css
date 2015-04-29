@@ -61,11 +61,15 @@
 
 .sidebar-nav li {
     text-indent: 20px;
-    line-height: 40px;
 }
 
 .sidebar-nav li .form-group {
     text-indent: 0;
+    width: 210px;
+}
+
+.sidebar-nav li .form-control {
+    width: 100%;
 }
 
 .sidebar-nav li label {
@@ -132,4 +136,41 @@
         position: relative;
         margin-right: 0;
     }
+}
+
+/* Customize */
+.sidebar-nav .item {
+    margin-top: 10px;
+}
+
+.sidebar-nav .item:hover {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+}
+
+.sidebar-nav .item .name,
+.sidebar-nav .item .media-heading {
+    font-size: 16px;
+    height: 22px;
+    line-height: 22px;
+}
+
+.sidebar-nav .item .name {
+    color: #337ab7;
+}
+
+.sidebar-nav .item .code {
+    margin-bottom: 0;
+    color: #ddd;
+}
+
+.sidebar-nav .item .media-body {
+    margin-bottom: 0;
+    color: #ddd;
+    text-align: right;
+    padding-right: 20px;
+}
+
+.sidebar-nav .item .media-heading{
+    margin-bottom: 0;
 }
