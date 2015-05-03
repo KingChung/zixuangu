@@ -18,6 +18,9 @@ define(
                 'data-type': 'item'
             },
             template: doT.template(ItemViewTemplate),
+            initialize: function() {
+
+            },
             serialize: function(){
                 return this.model.toJSON();
             }
@@ -27,7 +30,10 @@ define(
             template: doT.template(ViewTemplate),
             initialize: function(){
             	this.collection = new StockCollection();
-                this.collection.on('reset', this.renderList);
+                this.collection.on('reset', this.renderList, this);
+                this.collection.on('add', this.appendList, this);
+
+                this.$list = null;
             },
             views: {
 
@@ -38,13 +44,22 @@ define(
             preventDefault: function(){
                 return false;
             },
-            renderList: function(){
+            renderList: function(collection){
                 this.$('[data-type="item"]').remove();
-                this.collection.each(function(s){
-
-                });
+                this.collection.each(_.bind(this.appendList, this));
+            },
+            appendList: function(model){
+                var itemView = new ItemView({model: model});
+                itemView.$el.appendTo(this.$list);
+                itemView.render();
+            },
+            beforeRender: function(){
+                this.collection.fetch({reset: true});
             },
             afterRender: function(){
+                var self = this;
+                this.$list = this.$('[data-type="list"]');
+
                 var $input = $('#search_stock');
                 $input.autocomplete({
                     source: function(req, res){
@@ -62,7 +77,7 @@ define(
                         var model = new StockModel();
                         model.save({symbol: ui.item.symbol, type: ui.item.type}, {
                             success: function(model, response){
-
+                                self.collection.add(model);
                             }
                         });
                     }

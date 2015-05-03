@@ -5,10 +5,11 @@ define(
     , function(Backbone){
         
         return Backbone.Model.extend({
-            urlRoot: '/api/stock',
+            urlRoot: '/api/stock/',
         	defaults: {
-        		"code": "",
-        		"price": ""
+        		"name": "",
+        		"symbol": "",
+                "type": ""
         	},
             initialize: function(){
 
