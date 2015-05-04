@@ -93,18 +93,52 @@ router.post('/', function(req, res, next) {
 
 router.get('/search', function(req, res, next) {
 	http.get(remoteApi('search', req.param('keyword')), function(r){
-		var data = '';
+		var bufferHelper = new BufferHelper();
 		r.on('data', function(chunk){
-			data += chunk;
+			bufferHelper.concat(chunk);
 		});
 		r.on('end', function(){
-			data = (data.match(/\{.*\}/) || [])[0];
+			data = (bufferHelper.toString().match(/\{.*\}/) || [])[0];
 			res.json({
 				result: true,
 				data: _.map(data.replace(/\},\{/g, '}#{').split('#'), function(s){
 					return JSON.parse(s);
 				})
 			});
+		});
+	});
+});
+
+router.get('/instant', function(req, res, next) {
+	http.get(remoteApi('get', req.query.symbol, req.query.type), function(r){
+		var bufferHelper = new BufferHelper();
+		r.on('data', function(chunk){
+			bufferHelper.concat(chunk);
+		});
+		r.on('end', function(){
+			var data = iconv.decode(bufferHelper.toBuffer(), 'gbk');
+			var result = (data.match(/="(.*)"/) || [])[1];
+			if(result.length) {
+				var fields = result.split(',');
+				res.json({
+					result: true,
+					data: {
+						name: fields[0],
+						opening_price: fields[1],
+						last_price: fields[2],
+						current_price: fields[3],
+						change_price: (fields[3] - fields[2]).toFixed(2),
+						change_percent: (fields[1] != 0) ? ((fields[3] - fields[2]) / fields[2] * 100).toFixed(2) : '',
+						day_s_high: fields[4],
+						day_s_low: fields[5],
+						date: fields[30],
+						time: fields[31]
+					}
+				});
+			} else {
+				next();
+			}
+			
 		});
 	});
 });

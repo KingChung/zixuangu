@@ -184,7 +184,53 @@
     margin-bottom: 0;
 }
 
+.main-stock .title {
+
+}
+
 /* jQuery ui */
 .ui-autocomplete {
     z-index: 1001;
+}
+
+.stock-detail .price-box {
+    margin-right: 30px;
+    border-right: 1px solid #ddd;
+    padding-right: 30px;
+}
+
+.stock-detail .price {
+    font-size: 36px;
+    text-align: center;
+    height: 36px;
+    line-height: 36px;
+}
+
+.stock-detail .change {
+    margin-left: 10px;
+    font-size: 14px;
+    height: 18px;
+    line-height: 18px;
+    text-align: right;
+}
+
+.stock-detail .change .fa {
+    font-size: 24px;
+    vertical-align: top;
+    line-height: inherit;
+}
+
+.stock-detail > .table {
+    width: 40%;
+    margin-bottom: 0;
+}
+
+.stock-detail .table>tbody>tr>td {
+    padding: 4px;
+    padding-left: 0;
+    border-top: 0;
+}
+
+.stock-time-line {
+    margin-top: 10px;
 }

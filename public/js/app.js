@@ -28,6 +28,21 @@ require([
             }
         };
 
+        var modelParse = Backbone.Model.prototype.parse;
+        Backbone.Model.prototype.parse = function(response, options){
+            var _response = {};
+            if(response.result && response.data) {
+                _response = _.extend({}, _.omit(response.data, '_id'), {
+                    id: response.data._id
+                });
+            } else {
+                _response = _.extend({}, _.omit(response, '_id'), {
+                    id: response._id
+                });
+            }
+            return modelParse.call(this, _response, options);
+        };
+
         var modelSave = Backbone.Model.prototype.save;
         Backbone.Model.prototype.save = function(key, val, options) {
             var attrs, method, xhr, attributes = this.attributes;

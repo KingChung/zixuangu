@@ -4,7 +4,7 @@
         <p class="code">{{=it.symbol}}</p>
     </div>
     <div class="media-body">
-        <h4 class="media-heading">{{=it.price}}</h4>
-        <div>{{=it.percent_change}}%</div>
+        <h4 class="media-heading">{{=it.price || "00.00"}}</h4>
+        <div>{{=it.percent_change || "00.00"}}%</div>
     </div>
 </div>

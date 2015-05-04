@@ -1,10 +1,66 @@
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-12">
-            <h1>Simple Sidebar</h1>
-            <p>This template has a responsive menu toggling system. The menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will appear/disappear. On small screens, the page content will be pushed off canvas.</p>
-            <p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>
-            <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
-        </div>
-    </div>
+	{{?it.symbol}}
+	    <div class="row">
+	        <div class="col-lg-12">
+	            <h1 style="border-bottom: 1px solid #ddd; padding-bottom: 10px;">
+	            	{{=it.name}}({{=it.symbol}})
+	        	</h1>
+	            <div class="stock-detail clearfix">
+            		<div class="pull-left clearfix price-box">
+	            		<div class="pull-left">
+	            			<div class="price {{?it.change_price > 0}}text-red{{??it.change_price < 0}}text-green{{?}}">
+		            			{{=it.current_price}} <i class="fa {{?it.change_price > 0}}fa-long-arrow-up{{??it.change_price < 0}}fa-long-arrow-down{{??}}fa-minus{{?}}"></i>
+		            		</div>
+		            		<div class="time">
+		            			{{=it.date}} {{=it.time}}
+		            		</div>
+	            		</div>
+	            		<div class="pull-left {{?it.change_price > 0}}text-red{{??it.change_price < 0}}text-green{{?}}">
+	            			<div class="change">
+	            				{{=it.change_price}}
+	            			</div>
+	            			<div class="change">
+	            				{{?it.change_price > 0}}+{{?}}{{=it.change_percent}}%
+	            			</div>
+	            		</div>
+            		</div>
+            		<table class="table table-hover pull-left">
+            			<tbody>
+            				<tr>
+            					<td>
+            						<div>
+            							今开: <span class="{{?it.opening_price < it.current_price}}text-red{{??}}text-green{{?}}">{{=it.opening_price}}</span>
+            						</div>
+            					</td>
+            					<td>
+            						<div>
+            							最高: <span class="{{?it.day_s_high > it.opening_price}}text-red{{??}}text-green{{?}}">{{=it.day_s_high}}</span>
+            						</div>
+            					</td>
+            				</tr>
+            				<tr>
+            					<td>
+            						<div>
+            							昨收: <span>{{=it.last_price}}</span>
+            						</div>
+            					</td>
+            					<td>
+            						<div>
+            							最低: <span class="{{?it.day_s_low < it.opening_price}}text-green{{??}}text-red{{?}}">{{=it.day_s_low}}</span>
+            						</div>
+            					</td>
+            				</tr>
+            			</tbody>
+            		</table>
+	            </div>
+	            <div class="stock-time-line">
+        			<img class="time_line" src="http://image.sinajs.cn/newchart/min/n/{{=(it.type + it.symbol).toLowerCase()}}.gif" alt="实时分时图">
+        		</div>
+	        </div>
+	    </div>
+	{{??}}
+		<h1>
+	    	欢迎使用自选股
+		</h1>
+	{{?}}
 </div>

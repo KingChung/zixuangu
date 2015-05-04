@@ -3,13 +3,12 @@ define(
         'backbone',
         'doT',
         'model/stock',
-        'model/stock_search',
-        'collection/stock',
+        'model/stock/search',
         'text!templates/sidebar.html',
         'text!templates/sidebar/stock.html',
         'jqueryUI'
     ]
-    , function(Backbone, doT, StockModel, StockSearchModel, StockCollection, ViewTemplate, ItemViewTemplate){
+    , function(Backbone, doT, StockModel, StockSearchModel, ViewTemplate, ItemViewTemplate){
 
         var ItemView = Backbone.View.extend({
             tagName: 'li',
@@ -19,39 +18,30 @@ define(
             },
             template: doT.template(ItemViewTemplate),
             initialize: function() {
-
+                
             },
             serialize: function(){
                 return this.model.toJSON();
+            },
+            afterRender: function(){
+                // console.log(this.model.toJSON('id'))
+                this.$el.attr('data-id', this.model.get('id'));
             }
         });
 
         return Backbone.View.extend({
             template: doT.template(ViewTemplate),
-            initialize: function(){
-            	this.collection = new StockCollection();
+            initialize: function(options){
+                if(!options.collection) throw Error('Collection can not be blank.');
+                this.collection = options.collection; 
                 this.collection.on('reset', this.renderList, this);
                 this.collection.on('add', this.appendList, this);
 
                 this.$list = null;
             },
-            views: {
-
-            },
             events: {
-                'submit #search_form': 'preventDefault'
-            },
-            preventDefault: function(){
-                return false;
-            },
-            renderList: function(collection){
-                this.$('[data-type="item"]').remove();
-                this.collection.each(_.bind(this.appendList, this));
-            },
-            appendList: function(model){
-                var itemView = new ItemView({model: model});
-                itemView.$el.appendTo(this.$list);
-                itemView.render();
+                'submit #search_form': 'preventDefault',
+                'click [data-type="item"]': 'showMain'
             },
             beforeRender: function(){
                 this.collection.fetch({reset: true});
@@ -88,6 +78,22 @@ define(
                         .append(item.name + '(' + item.symbol + ')')
                         .appendTo(ul);
                 };
+            },
+            preventDefault: function(){
+                return false;
+            },
+            renderList: function(collection){
+                this.$('[data-type="item"]').remove();
+                this.collection.each(_.bind(this.appendList, this));
+            },
+            appendList: function(model){
+                var itemView = new ItemView({model: model});
+                itemView.$el.appendTo(this.$list);
+                itemView.render();
+            },
+            showMain: function(e){
+                var model = this.collection.get($(e.currentTarget).attr('data-id'));
+                this.collection.trigger('show', model.get('symbol'), model.get('type'));
             }
         });
     }
