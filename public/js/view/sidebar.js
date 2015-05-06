@@ -34,7 +34,7 @@ define(
             initialize: function(options){
                 if(!options.collection) throw Error('Collection can not be blank.');
                 this.collection = options.collection; 
-                this.collection.on('reset', this.renderList, this);
+                this.collection.on('reset remove', this.renderList, this);
                 this.collection.on('add', this.appendList, this);
 
                 this.$list = null;
@@ -82,7 +82,7 @@ define(
             preventDefault: function(){
                 return false;
             },
-            renderList: function(collection){
+            renderList: function(){
                 this.$('[data-type="item"]').remove();
                 this.collection.each(_.bind(this.appendList, this));
             },
@@ -93,7 +93,7 @@ define(
             },
             showMain: function(e){
                 var model = this.collection.get($(e.currentTarget).attr('data-id'));
-                this.collection.trigger('show', model.get('symbol'), model.get('type'));
+                this.collection.trigger('show', model.toJSON());
             }
         });
     }

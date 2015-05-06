@@ -90,6 +90,12 @@ router.post('/', function(req, res, next) {
 	});
 });
 
+router.delete('/:id', function(req, res, next) {
+	Stock.findByIdAndRemove(req.params.id, function(err, doc) {
+		if(err) next(err);
+		res.json({result: true});
+	});
+});
 
 router.get('/search', function(req, res, next) {
 	http.get(remoteApi('search', req.param('keyword')), function(r){

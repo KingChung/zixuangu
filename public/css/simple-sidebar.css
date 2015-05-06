@@ -184,8 +184,21 @@
     margin-bottom: 0;
 }
 
-.main-stock .title {
+.stock-title {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    position: relative;
+}
 
+.stock-title .setting {
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    font-size: 20px;
+}
+
+.stock-title .setting .fa {
+    margin-left: 10px;
 }
 
 /* jQuery ui */
@@ -233,4 +246,12 @@
 
 .stock-time-line {
     margin-top: 10px;
+}
+
+/* chart */
+#chartdiv {
+    background: #3f3f4f;
+    color:#ffffff;       
+    width   : 100%;
+    height  : 500px;
 }

@@ -2,8 +2,12 @@
 	{{?it.symbol}}
 	    <div class="row">
 	        <div class="col-lg-12">
-	            <h1 style="border-bottom: 1px solid #ddd; padding-bottom: 10px;">
+	            <h1 class="stock-title" style="">
 	            	{{=it.name}}({{=it.symbol}})
+                    <span class="setting">
+                        <a class="remove_stock" href="javascript:;" title="删除自选股"><i class="fa fa-times"></i></a>
+                        <a href="javascript:;" title="提醒"><i class="fa fa-bell"></i></a>
+                    </span>
 	        	</h1>
 	            <div class="stock-detail clearfix">
             		<div class="pull-left clearfix price-box">
@@ -53,9 +57,10 @@
             			</tbody>
             		</table>
 	            </div>
-	            <div class="stock-time-line">
+	            <!-- <div class="stock-time-line">
         			<img class="time_line" src="http://image.sinajs.cn/newchart/min/n/{{=(it.type + it.symbol).toLowerCase()}}.gif" alt="实时分时图">
-        		</div>
+        		</div> -->
+        		<div id="chartdiv"></div>
 	        </div>
 	    </div>
 	{{??}}

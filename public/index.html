@@ -63,7 +63,10 @@
                 underscore: 'underscore/underscore',
                 layoutmanager: 'backbone.layoutmanager/backbone.layoutmanager',
                 text: 'requirejs-text/text',
-                doT: 'doT/doT'
+                doT: 'doT/doT',
+                amcharts: 'amcharts/dist/amcharts/amcharts',
+                'amcharts.serial': 'amcharts/dist/amcharts/serial',
+                'amcharts.themes.dark': 'amcharts/dist/amcharts/themes/dark'
             },
             shim: {
                 jquery: {
@@ -81,6 +84,16 @@
                 },
                 underscore: {
                     exports: ['_']
+                },
+                'amcharts.serial': {
+                    deps: [ 'amcharts' ],
+                    exports: 'AmCharts',
+                    init: function() {
+                        AmCharts.isReady = true;
+                    }
+                },
+                'amcharts.themes.dark': {
+                    deps: ['amcharts']
                 }
             },
             deps: ["../js/app"]
