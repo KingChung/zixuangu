@@ -51,8 +51,8 @@
 /* Sidebar Styles */
 
 .sidebar-nav {
-    position: absolute;
-    top: 0;
+    /*position: absolute;*/
+    /*top: 0;*/
     width: 250px;
     margin: 0;
     padding: 0;
@@ -99,6 +99,8 @@
     line-height: inherit;
     margin-top: 10px;
     margin-bottom: 10px;
+    padding-left: 20px;
+    color: #ddd;
 }
 
 .sidebar-nav > .sidebar-brand a {
@@ -140,11 +142,11 @@
 
 /* Common */
 .text-red {
-    color: #F05055;
+    color: #F05055 !important;
 }
 
 .text-green {
-    color: rgb(114, 179, 58);
+    color: rgb(114, 179, 58) !important;
 }
 
 /* Customize */
@@ -204,6 +206,10 @@
 /* jQuery ui */
 .ui-autocomplete {
     z-index: 1001;
+}
+
+.stock-detail {
+    margin-bottom: 10px;
 }
 
 .stock-detail .price-box {

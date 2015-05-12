@@ -3,8 +3,11 @@
         <a class="name" href="#">{{=it.name}}</a>
         <p class="code">{{=it.symbol}}</p>
     </div>
-    <div class="media-body">
-        <h4 class="media-heading">{{=it.price || "00.00"}}</h4>
-        <div>{{=it.percent_change || "00.00"}}%</div>
+    <div class="media-body {{?it.change_price > 0}}text-red{{??it.change_price < 0}}text-green{{?}}">
+        <h4 class="media-heading">
+        	{{?it.change_price > 0}}+{{??it.change_price < 0}}-{{?}}
+        	{{=it.current_price || "00.00"}}
+    	</h4>
+        <div>{{?it.change_price > 0}}+{{?}}{{=it.change_percent || "00.00"}}%</div>
     </div>
 </div>

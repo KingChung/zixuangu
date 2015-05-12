@@ -18,13 +18,12 @@ define(
             },
             template: doT.template(ItemViewTemplate),
             initialize: function() {
-                
+                this.model.on('change:current_price', this.render, this);
             },
             serialize: function(){
                 return this.model.toJSON();
             },
             afterRender: function(){
-                // console.log(this.model.toJSON('id'))
                 this.$el.attr('data-id', this.model.get('id'));
             }
         });
@@ -35,7 +34,7 @@ define(
                 if(!options.collection) throw Error('Collection can not be blank.');
                 this.collection = options.collection; 
                 this.collection.on('reset remove', this.renderList, this);
-                this.collection.on('add', this.appendList, this);
+                this.collection.on('add', this.prependList, this);
 
                 this.$list = null;
             },
@@ -44,7 +43,14 @@ define(
                 'click [data-type="item"]': 'showMain'
             },
             beforeRender: function(){
-                this.collection.fetch({reset: true});
+                this.collection.fetch({
+                    reset: true,
+                    success: function(collection){
+                        if(collection.length) {
+                            collection.trigger('show', collection.last().toJSON());
+                        }
+                    }
+                });
             },
             afterRender: function(){
                 var self = this;
@@ -68,6 +74,8 @@ define(
                         model.save({symbol: ui.item.symbol, type: ui.item.type}, {
                             success: function(model, response){
                                 self.collection.add(model);
+                                self.collection.trigger('show', model.toJSON());
+                                $input.val('');
                             }
                         });
                     }
@@ -84,16 +92,16 @@ define(
             },
             renderList: function(){
                 this.$('[data-type="item"]').remove();
-                this.collection.each(_.bind(this.appendList, this));
+                this.collection.each(_.bind(this.prependList, this));
             },
-            appendList: function(model){
+            prependList: function(model){
                 var itemView = new ItemView({model: model});
-                itemView.$el.appendTo(this.$list);
+                itemView.$el.prependTo(this.$list);
                 itemView.render();
             },
             showMain: function(e){
                 var model = this.collection.get($(e.currentTarget).attr('data-id'));
-                this.collection.trigger('show', model.toJSON());
+                this.collection.trigger('show', model);
             }
         });
     }

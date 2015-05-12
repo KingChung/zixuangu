@@ -62,8 +62,10 @@
                 backbone: 'backbone/backbone',
                 underscore: 'underscore/underscore',
                 layoutmanager: 'backbone.layoutmanager/backbone.layoutmanager',
+                store: 'store.js/store',
                 text: 'requirejs-text/text',
                 doT: 'doT/doT',
+                notify: 'html5-desktop-notifications/desktop-notify-min',
                 amcharts: 'amcharts/dist/amcharts/amcharts',
                 'amcharts.serial': 'amcharts/dist/amcharts/serial',
                 'amcharts.themes.dark': 'amcharts/dist/amcharts/themes/dark'
@@ -81,6 +83,9 @@
                 backbone: {
                     deps: ['jquery', 'underscore'],
                     exports: ['Backbone']
+                },
+                layoutmanager: {
+                    deps: ['backbone', 'underscore', 'jquery']
                 },
                 underscore: {
                     exports: ['_']

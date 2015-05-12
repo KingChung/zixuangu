@@ -3,17 +3,23 @@ require([
     'backbone', 
     'underscore',
     'doT', 
-    'view/main',
     'bootstrap', 
     'layoutmanager'
     ],
-    function($, Backbone, _, doT, Main) {
+    function($, Backbone, _, doT) {
 
         var toString = ({}).toString;
         Backbone.Layout.configure({
             // Allow LayoutManager to augment Backbone.View.prototype.
             manage: true
         });
+
+        var oldSync = Backbone.sync;
+        Backbone.sync = function(method, model, options){
+            options = options || {};
+            if(!options.ajaxSync) options.ajaxSync = true;
+            return oldSync.call(this, method, model, options);
+        }
 
         Backbone.Model.prototype.param = function() {
             this._urlParams || (this._urlParams = {});
@@ -126,12 +132,29 @@ require([
             return modelFetch.apply(this, args);
         };
 
+        Backbone.Collection.prototype.param = function() {
+            this._urlParams || (this._urlParams = {});
+            var args = [].slice.call(arguments, 0);
+            if(toString.call(args[0]) == '[object String]') {
+                if( ! args[1]) {
+                    return this._urlParams[args[0]];
+                }
+                this._urlParams[args[0]] = args[1];
+            } else if(toString.call(args[0]) == '[object Object]') {
+                this._urlParams = _.extend(this._urlParams, args[0]);
+            }
+        };
+
         var collectionFetch = Backbone.Collection.prototype.fetch;
         Backbone.Collection.prototype.fetch = function(options) {
             options = options ? _.clone(options) : {};
             if (options.parse === void 0) options.parse = true;
             var success = options.success;
             var collection = this;
+
+            var data = options.data;
+            options.data = _.extend(data || {}, this._urlParams || {});
+            
             options.success = function(resp) {
                 var data = resp.data || [];
                 if(resp.result) {
@@ -156,5 +179,7 @@ require([
             };
         };
 
-        Main();
+        require(['view/main'], function(Main){
+            Main();
+        });
     });

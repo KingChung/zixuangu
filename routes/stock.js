@@ -5,6 +5,7 @@ var _ = require('underscore');
 var BufferHelper = require('bufferhelper');
 var iconv = require('iconv-lite');
 var router = express.Router();
+var qs = require('querystring');
 
 var Stock = require('../model/stock');
 
@@ -25,21 +26,50 @@ var remoteApiMap = {
 		});
 	},
 	//http://hq.sinajs.cn/list=sh601006
-	get: function(symbol, stockExchange){
-		stockExchange = (stockExchange || 'sh').toLowerCase();
-		return url.format({
+	get: function(code){
+		return qs.unescape(url.format({
 			protocol: 'http',
 			host: 'hq.sinajs.cn',
 			query: {
-				list: stockExchange + symbol
+				list: code.toLowerCase()
 			}
-		});
+		}));
+	},
+	list: function(codes){
+		return qs.unescape(url.format({
+			protocol: 'http',
+			host: 'hq.sinajs.cn',
+			query: {
+				list: codes.toLowerCase()
+			}
+		}));
 	}
 };
 var remoteApi = function(action){
 	var rest = [].slice.call(arguments, 1);
 	return remoteApiMap[action] && remoteApiMap[action].apply(this, rest);
 };
+
+//Parse sina's data
+var parseSina = function(data){
+	var result = (data.match(/="(.*)"/) || [])[1];
+	if(result) {
+		var fields = result.split(',');
+		return {
+			name: fields[0],
+			opening_price: fields[1],
+			last_price: fields[2],
+			current_price: fields[3],
+			change_price: (fields[3] - fields[2]).toFixed(2),
+			change_percent: (fields[1] != 0) ? ((fields[3] - fields[2]) / fields[2] * 100).toFixed(2) : '',
+			day_s_high: fields[4],
+			day_s_low: fields[5],
+			date: fields[30],
+			time: fields[31]
+		}
+	}
+	return false;
+}
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -54,7 +84,11 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-	http.get(remoteApi('get', req.body.symbol, req.body.type), function(r){
+	if(!req.body.type || !req.body.symbol) {
+		next(new Error('Symbol or Type cannot be blank'));
+	}
+	var code = req.body.type + req.body.symbol;
+	http.get(remoteApi('get', code), function(r){
 		var bufferHelper = new BufferHelper();
 		r.on("data", function(chunk) {
 		    bufferHelper.concat(chunk);
@@ -64,6 +98,10 @@ router.post('/', function(req, res, next) {
 			var result = (data.match(/="(.*)"/) || [])[1];
 			if(result) {
 				var fields = result.split(',');
+				if( ! fields[0]) {
+					next(new Error("Cannot find the stock"));
+				}
+
 				Stock.findOne({name: fields[0]}, function(err, stock){
 					if(err) next(err);
 					if( ! stock) {
@@ -81,7 +119,6 @@ router.post('/', function(req, res, next) {
 					} else {
 						res.json({result: false, message: 'Already exists.'});
 					}
-					
 				});
 			} else {
 				res.send({result: false, message: 'Not Found.'})
@@ -115,38 +152,61 @@ router.get('/search', function(req, res, next) {
 	});
 });
 
+var getRandom = function(min, max){
+	return (Math.random() * (max - min) + min).toFixed(2);
+}
+
 router.get('/instant', function(req, res, next) {
-	http.get(remoteApi('get', req.query.symbol, req.query.type), function(r){
-		var bufferHelper = new BufferHelper();
-		r.on('data', function(chunk){
-			bufferHelper.concat(chunk);
-		});
-		r.on('end', function(){
-			var data = iconv.decode(bufferHelper.toBuffer(), 'gbk');
-			var result = (data.match(/="(.*)"/) || [])[1];
-			if(result.length) {
-				var fields = result.split(',');
-				res.json({
-					result: true,
-					data: {
-						name: fields[0],
-						opening_price: fields[1],
-						last_price: fields[2],
-						current_price: fields[3],
-						change_price: (fields[3] - fields[2]).toFixed(2),
-						change_percent: (fields[1] != 0) ? ((fields[3] - fields[2]) / fields[2] * 100).toFixed(2) : '',
-						day_s_high: fields[4],
-						day_s_low: fields[5],
-						date: fields[30],
-						time: fields[31]
-					}
+	//List
+	var codes = req.query.codes;
+	if(codes) {
+		http.get(remoteApi('list', qs.unescape(codes)), function(r){
+			var bufferHelper = new BufferHelper();
+			r.on('data', function(chunk){
+				bufferHelper.concat(chunk);
+			});
+			r.on('end', function(){
+				var result = [];
+				var data = iconv.decode(bufferHelper.toBuffer(), 'gbk');
+				_.each(data.split('\n'), function(v){
+					v && result.push(parseSina(v));
 				});
-			} else {
-				next();
-			}
-			
+				if(result.length) {
+					//@TEST
+					// _.each(result, function(r, k){
+					// 	var p = parseInt(r.current_price);
+					// 	r.current_price = getRandom(p, p+10);
+					// });
+					
+					res.json({
+						result: true,
+						data: result
+					});
+				} else {
+					next();
+				}
+			});
 		});
-	});
+	} else {
+		//View
+		http.get(remoteApi('get', req.query.code), function(r){
+			var bufferHelper = new BufferHelper();
+			r.on('data', function(chunk){
+				bufferHelper.concat(chunk);
+			});
+			r.on('end', function(){
+				var data = parseSina(iconv.decode(bufferHelper.toBuffer(), 'gbk'));
+				if(data) {
+					res.json({
+						result: true,
+						data: data
+					});
+				} else {
+					next();
+				}
+			});
+		});
+	}
 });
 
 module.exports = router;
