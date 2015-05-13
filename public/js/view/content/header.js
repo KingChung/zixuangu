@@ -5,10 +5,9 @@ define(
         'doT',
         'util/notify',
         'model/stock',
-        'model/stock/setting',
         'text!templates/content/header.html'
     ]
-    , function(Backbone, _, doT, Notify, StockModel, StockSettingModel, ViewTemplate){
+    , function(Backbone, _, doT, Notify, StockModel, ViewTemplate){
 
         return Backbone.View.extend({
             tagName: 'h1',
@@ -18,19 +17,16 @@ define(
                 var self = this;
                 this.model = this.model || new StockModel();
                 // this.listenTo(this.model, 'change:name', this.render, this);
-                this.setting = new StockSettingModel();
-                this.setting.param({stock_id: this.model.get('id')});
-                this.setting.fetch({
-                    success: function(model, res){
-                        self.render();
-                    }
-                });
+                // this.setting = new StockSettingModel();
+                // this.setting.param({stock_id: this.model.get('id')});
+                // this.setting.fetch({
+                //     success: function(model, res){
+                //         self.render();
+                //     }
+                // });
             },
             serialize: function() {
-                return _.extend(this.setting.toJSON(), {
-                    name: this.model.get('name'),
-                    symbol: this.model.get('symbol')
-                });
+                return this.model.toJSON();
             },
             events: {
                 'click .remove_stock': 'removeStock',
@@ -52,9 +48,8 @@ define(
                 _.each($target.serializeArray(), function(pair){
                     data[pair.name] = pair.value;
                 });
-                data.stock_id = this.model.get('id');
                 data.enable = (data.enable == "on");
-                this.setting.save(data, {
+                this.model.save({setting: data}, {
                     success: function(){
                         Notify.notify('提醒设置', '保存成功!');
                         $('#notify_setting').dropdown('toggle');

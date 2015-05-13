@@ -8,7 +8,6 @@ var router = express.Router();
 var qs = require('querystring');
 
 var Stock = require('../model/stock');
-var StockSetting = require('../model/stock_setting');
 
 var remoteApiMap = {
 	//http://quotes.money.163.com/stocksearch/json.do?type=&count=1&word=601989&t=0.20890283794142306
@@ -128,6 +127,24 @@ router.post('/', function(req, res, next) {
 	});
 });
 
+router.put('/:id', function(req, res, next) {
+	var body = req.body || {};
+	var id = req.param('id');
+	if(!id) return next(new Error('Stock id cannot be blank.'));
+
+	var allowAttrs = ['symbol', 'type', 'setting'];
+	body = _.pick(body, allowAttrs);
+
+	if(body.setting) {
+		var allowSettingAttrs = ['enable', 'count', 'range_percent', 'interval'];
+		body.setting = _.pick(body.setting, allowSettingAttrs);
+	}
+	Stock.findByIdAndUpdate(id, body, {upsert: true}, function(err, doc){
+		if(err) next(err);
+		res.json({result: true, data: _.extend(doc, body)});
+	});
+});
+
 router.delete('/:id', function(req, res, next) {
 	Stock.findByIdAndRemove(req.param(id), function(err, doc) {
 		if(err) next(err);
@@ -208,42 +225,6 @@ router.get('/instant', function(req, res, next) {
 			});
 		});
 	}
-});
-
-router.get('/setting', function(req, res, next){
-	var stockId = req.param('stock_id');
-	if(!stockId) return next(new Error('Stock id cannot be blank.'));
-	StockSetting.findOne({stock_id: stockId}, function(err, setting) {
-		if(err) next(err);
-		res.json({
-			result: true,
-			data: setting
-		});
-	});
-});
-
-//Create
-router.post('/setting', function(req, res, next){
-	var body = req.body || {};
-	if(!body.stock_id) return next(new Error('Stock id cannot be blank.'));
-	var allowAttrs = ['enable', 'stock_id', 'count', 'range_percent', 'interval'];
-	var data = _.pick(body, allowAttrs);
-	StockSetting.findOneAndUpdate({stock_id: body.stock_id}, data, {upsert: true}, function(err, doc){
-		if(err) next(err);
-		res.json({result: true, data: doc});
-	});
-});
-
-//Update
-router.put('/setting/:id', function(req, res, next){
-	var id = req.param('id');
-	if(!id) return next(new Error('Setting id cannot be blank.'));
-	var allowAttrs = ['enable', 'stock_id', 'count', 'range_percent', 'interval'];
-	var data = _.pick(req.body || {}, allowAttrs);
-	StockSetting.findByIdAndUpdate(req.param('id'), data, {upsert: true}, function(err, doc){
-		if(err) next(err);
-		res.json({result: true, data: doc});
-	});
 });
 
 module.exports = router;

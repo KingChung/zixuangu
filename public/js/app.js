@@ -37,7 +37,7 @@ require([
         var modelParse = Backbone.Model.prototype.parse;
         Backbone.Model.prototype.parse = function(response, options){
             var _response = {};
-            if(response.result && response.data) {
+            if(response && response.result && response.data) {
                 _response = _.extend({}, _.omit(response.data, '_id'), {
                     id: response.data._id
                 });

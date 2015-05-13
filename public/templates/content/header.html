@@ -8,19 +8,19 @@
                 <legend>提醒编辑</legend>
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" name="enable" {{?it.enable}}checked{{?}}> 提醒设置
+                        <input type="checkbox" name="enable" {{?it.setting.enable}}checked{{?}}> 提醒设置
                     </label>
                 </div>
 
                 <div class="form-group">
                     <label for="setting_count" class="control-label">取点个数</label>
-                    <input type="number" name="count" class="form-control" id="setting_count" placeholder="Ex. 6" value="{{=it.count}}">
+                    <input type="number" name="count" class="form-control" id="setting_count" placeholder="Ex. 6" value="{{=it.setting.count}}">
                 </div>
                 
                 <div class="form-group">
                     <label for="setting_count" class="control-label">样点更新时隔</label>
                     <div class="input-group">
-                        <input type="number" name="interval" class="form-control" id="setting_count" placeholder="Ex. 20" value="{{=it.interval}}">
+                        <input type="number" name="interval" class="form-control" id="setting_count" placeholder="Ex. 20" value="{{=it.setting.interval}}">
                         <div class="input-group-addon">秒</div>
                     </div>
                 </div>
@@ -28,7 +28,7 @@
                 <div class="form-group">
                     <label for="setting_count" class="control-label">持续上升/下降百分比</label>
                     <div class="input-group">
-                        <input type="text" name="range_percent" class="form-control" id="setting_count" placeholder="Ex. 0.5" value="{{=it.range_percent}}">
+                        <input type="text" name="range_percent" class="form-control" id="setting_count" placeholder="Ex. 0.5" value="{{=it.setting.range_percent}}">
                         <div class="input-group-addon">%</div>
                     </div>
                 </div>
