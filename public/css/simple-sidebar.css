@@ -254,6 +254,23 @@
     margin-top: 10px;
 }
 
+.stock-title .setting .dropdown {
+    display: inline-block;
+}
+
+.stock-title .setting .dropdown-menu {
+    padding: 10px;
+}
+
+.stock-title .setting legend {
+    margin-bottom: 10px;
+    border-bottom: none;
+}
+
+.stock-title .setting .checkbox label {
+    font-weight: 700;
+}
+
 /* chart */
 #chartdiv {
     background: #3f3f4f;

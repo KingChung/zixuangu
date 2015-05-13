@@ -1,5 +1,4 @@
 var mg = require('mongoose');
-mg.connect('mongodb://localhost/stock_app');
 
 var schema = new mg.Schema({
 	name: String,

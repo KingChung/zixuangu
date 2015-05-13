@@ -1,0 +1,44 @@
+{{=it.name}}({{=it.symbol}})
+<div class="setting">
+    <a class="remove_stock" href="javascript:;" title="删除自选股"><i class="fa fa-times"></i></a>
+    <div class="dropdown">
+        <a id="notify_setting" href="javascript:;" title="提醒" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false"><i class="fa fa-bell"></i></a>
+        <div class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="notify_setting">
+            <form id="setting-form" class="" action="#" method="POST" role="form">
+                <legend>提醒编辑</legend>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="enable" {{?it.enable}}checked{{?}}> 提醒设置
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label for="setting_count" class="control-label">取点个数</label>
+                    <input type="number" name="count" class="form-control" id="setting_count" placeholder="Ex. 6" value="{{=it.count}}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="setting_count" class="control-label">样点更新时隔</label>
+                    <div class="input-group">
+                        <input type="number" name="interval" class="form-control" id="setting_count" placeholder="Ex. 20" value="{{=it.interval}}">
+                        <div class="input-group-addon">秒</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="setting_count" class="control-label">持续上升/下降百分比</label>
+                    <div class="input-group">
+                        <input type="text" name="range_percent" class="form-control" id="setting_count" placeholder="Ex. 0.5" value="{{=it.range_percent}}">
+                        <div class="input-group-addon">%</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-lg-offset-6 col-lg-2">
+                        <button type="submit" class="btn btn-primary">保存</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

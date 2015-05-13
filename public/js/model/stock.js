@@ -2,11 +2,10 @@ define(
     [
         'backbone',
         'underscore',
-        'store',
-
-        'notify'
+        'util/notify',
+        'store'
     ]
-    , function(Backbone, _, Store){
+    , function(Backbone, _, Notify, Store){
         
         return Backbone.Model.extend({
             urlRoot: '/api/stock/',
@@ -45,10 +44,7 @@ define(
                 }, this);
             },
             notify: function(points){
-                notify.createNotification(this.get('name') + "(" + this.get("symbol") + ")", {
-                    icon: "/images/notify-icon.png",
-                    body: "报价:" + points.toString()
-                });
+                Notify.notify(this.get('name') + "(" + this.get("symbol") + ")", "报价:" + points.toString());
             },
             calculate: function(points){
                 points = _.map(points || [], function(p){
