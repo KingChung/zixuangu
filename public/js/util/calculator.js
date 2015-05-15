@@ -33,6 +33,7 @@ define(
                 if(this.setting.enable) this.model.on('change:'+this._field, this.run, this);
             },
             run: function(model, price){
+                console.log(this.model.get('name'), this._interval_runtime);
                 if(this._interval_runtime) return this._interval_runtime--;
                 this.store(price);
                 this.calculate();
