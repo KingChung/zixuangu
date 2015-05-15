@@ -191,10 +191,10 @@ router.get('/instant', function(req, res, next) {
 				});
 				if(result.length) {
 					//@TEST
-					// _.each(result, function(r, k){
-					// 	var p = parseInt(r.current_price);
-					// 	r.current_price = getRandom(p, p+10);
-					// });
+					_.each(result, function(r, k){
+						var p = parseInt(r.current_price);
+						r.current_price = getRandom(p, p+10);
+					});
 					
 					res.json({
 						result: true,

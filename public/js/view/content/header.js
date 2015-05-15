@@ -16,14 +16,6 @@ define(
             initialize: function(){
                 var self = this;
                 this.model = this.model || new StockModel();
-                // this.listenTo(this.model, 'change:name', this.render, this);
-                // this.setting = new StockSettingModel();
-                // this.setting.param({stock_id: this.model.get('id')});
-                // this.setting.fetch({
-                //     success: function(model, res){
-                //         self.render();
-                //     }
-                // });
             },
             serialize: function() {
                 return this.model.toJSON();
@@ -44,12 +36,13 @@ define(
             },
             updateStockSetting: function(e){
                 var data = {},
-                  $target = $(e.currentTarget);
+                    $target = $(e.currentTarget);
                 _.each($target.serializeArray(), function(pair){
                     data[pair.name] = pair.value;
                 });
                 data.enable = (data.enable == "on");
                 this.model.save({setting: data}, {
+                    wait: true,
                     success: function(){
                         Notify.notify('提醒设置', '保存成功!');
                         $('#notify_setting').dropdown('toggle');
