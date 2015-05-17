@@ -13,6 +13,7 @@
     "font-awesome": "~4.3.0",
     "amcharts": "~3.13.3",
     "store.js": "~1.3.17",
-    "html5-desktop-notifications": "*"
+    "html5-desktop-notifications": "*",
+    "swfobject": "*"
   }
 }
