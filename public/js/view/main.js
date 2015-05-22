@@ -49,7 +49,6 @@ define(
                     });
                 },
                 afterRender: function(){
-                    Notify.notify('test', 'sounds');
                     
                 },
                 initInterval: function(){

@@ -2,15 +2,12 @@ define(
     [
         'backbone',
         'doT',
-        'amcharts.serial',
         'view/content/header',
         'view/content/detail',
         'view/content/timeline',
         'text!templates/content.html',
-
-        'amcharts.themes.dark'
     ],
-    function(Backbone, doT, amSerial, HeaderView, DetailView, TimelineView, ViewTemplate) {
+    function(Backbone, doT, HeaderView, DetailView, TimelineView, ViewTemplate) {
 
         return Backbone.View.extend({
             id: 'main-stock',

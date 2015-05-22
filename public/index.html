@@ -70,10 +70,7 @@
                 text: 'requirejs-text/text',
                 doT: 'doT/doT',
                 swfobject: 'swfobject/swfobject/swfobject',
-                notify: 'html5-desktop-notifications/desktop-notify-min',
-                amcharts: 'amcharts/dist/amcharts/amcharts',
-                'amcharts.serial': 'amcharts/dist/amcharts/serial',
-                'amcharts.themes.dark': 'amcharts/dist/amcharts/themes/dark'
+                notify: 'html5-desktop-notifications/desktop-notify-min'
             },
             shim: {
                 jquery: {
@@ -94,16 +91,6 @@
                 },
                 underscore: {
                     exports: ['_']
-                },
-                'amcharts.serial': {
-                    deps: [ 'amcharts' ],
-                    exports: 'AmCharts',
-                    init: function() {
-                        AmCharts.isReady = true;
-                    }
-                },
-                'amcharts.themes.dark': {
-                    deps: ['amcharts']
                 }
             },
             deps: ["../js/app"]
