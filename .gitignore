@@ -1,3 +1,4 @@
 /node_modules/*
 /public/bower_components/*
+!/public/bower_components/plugin/*
 .DS_Store
