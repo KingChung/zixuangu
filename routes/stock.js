@@ -152,9 +152,10 @@ router.put('/:id', function(req, res, next) {
 });
 
 router.delete('/:id', function(req, res, next) {
-	Stock.findByIdAndRemove(req.param(id), function(err, doc) {
+	var id = req.param("id");
+	Stock.findByIdAndRemove(id, function(err, doc) {
 		if(err) next(err);
-		res.json({result: true, data: {id: req.param(id)}});
+		res.json({result: true, data: {id: id}});
 	});
 });
 
