@@ -36,7 +36,7 @@ define(
                 if(this.setting.enable) this.model.on('change:'+this._field, this.run, this);
             },
             run: function(model, price){
-                if(--this._interval_runtime) return;
+                // if(--this._interval_runtime) return;
                 this.store(price);
                 this.calculate();
                 this._interval_runtime = this._interval;
@@ -50,12 +50,12 @@ define(
             store: function(price){
                 var id = this.model.get('id');
                 var points = Store.get(id) || [];
-                var lastPoint = points[points.length - 1];
+                var lastPoint = points[points.length - 1],
+                    lastTime = (lastPoint && lastPoint.time) || 0;
 
                 //Clear store if last point's date is not equal current date
                 var now = new Date();
-                if((now.getTime() - lastPoint) > 10e3) points = [];
-
+                if((now.getTime() - lastTime) > 10e3) points = [];
                 points.push({price: price, time: now.getTime()});
                 if(points.length > this.setting.count) points = points.slice(-this.setting.count);
 
@@ -64,7 +64,7 @@ define(
                 return points;
             },
             calculate: function(){
-                if(this._points < this.setting.count) return;
+                if(this._points.length < this.setting.count) return;
                 var points = _.map(this._points, function(p){
                     return p.price;
                 });

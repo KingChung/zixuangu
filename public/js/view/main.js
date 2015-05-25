@@ -22,25 +22,26 @@ define(
                     this.collection = new StockCollection();
                     this.collection.on('reset', this.initInterval, this);
 
-                    // var model = new Backbone.Model({id: 'test', price: 10, name: '测试股', display_name: '测试股(000000)'});
-                    // Calculator.register(model, 'price', {
-                    //     count: 3,
-                    //     interval: 6
-                    // });
+                    var model = new Backbone.Model({id: 'test', price: 10, name: '测试股', display_name: '测试股(000000)'});
+                    Calculator.register(model, 'price', {
+                        count: 5,
+                        interval: 30
+                    });
 
                     // var fre = [0.5, 0.6, 0.8, -0.7, -0.7, -0.1];
                     // for(var i = 0; i < 1; i++) {
                     //     fre = fre.concat(fre);
                     // }
 
-                    // var test = function(){
-                    //     var price = model.get('price'),
-                    //         changePercent = fre.shift(),
-                    //         newPrice = price + changePercent / 100 * price;
-                    //     model.set('price', parseFloat(newPrice.toFixed(2)));
-                    //     setTimeout(test, 1e3);
-                    // };
-                    // test();
+                    var prices = [15.54, 15.55, 15.56, 15.30, 14.90], interval = null;
+                    var test = function(){
+                        var price = model.get('price'),
+                            newPrice = prices.shift();
+                        if(!newPrice) return clearTimeout(interval);
+                        model.set('price', parseFloat(newPrice.toFixed(2)));
+                        interval = setTimeout(test, 1e3);
+                    };
+                    test();
                 },
                 beforeRender: function(){
                     this.setViews({
