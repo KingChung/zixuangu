@@ -41,6 +41,7 @@ define(
                     data[pair.name] = pair.value;
                 });
                 data.enable = (data.enable == "on");
+                data.enable_limitup = (data.enable_limitup == "on");
                 this.model.save({setting: data}, {
                     wait: true,
                     success: function(){

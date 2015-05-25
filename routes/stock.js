@@ -55,6 +55,10 @@ var parseSina = function(data){
 	var result = (data.match(/="(.*)"/) || [])[1];
 	if(result) {
 		var fields = result.split(',');
+		var five = [], i;
+		for (i = 10; i < 29; i = i + 2) {
+			five.push(Math.round(fields[i] / 100) || 0);
+		}
 		return {
 			name: fields[0],
 			opening_price: fields[1],
@@ -65,7 +69,9 @@ var parseSina = function(data){
 			day_s_high: fields[4],
 			day_s_low: fields[5],
 			date: fields[30],
-			time: fields[31]
+			time: fields[31],
+			buyfive: five.slice(0, 5),
+			sellfive: five.slice(5)
 		}
 	}
 	return false;
@@ -136,7 +142,7 @@ router.put('/:id', function(req, res, next) {
 	body = _.pick(body, allowAttrs);
 
 	if(body.setting) {
-		var allowSettingAttrs = ['enable', 'count', 'range_percent', 'interval'];
+		var allowSettingAttrs = ['enable', 'count', 'range_percent', 'interval', 'enable_limitup'];
 		body.setting = _.pick(body.setting, allowSettingAttrs);
 	}
 	Stock.findByIdAndUpdate(id, body, {upsert: true}, function(err, doc){

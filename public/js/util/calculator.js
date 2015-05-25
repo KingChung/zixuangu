@@ -20,7 +20,8 @@ define(
                 "enable": true,
                 "count": 3,
                 "range_percent": 0.5,
-                "interval": 60
+                "interval": 60,
+                "algorithms" : ["timChange", "limitUp"]
             };
             this._init(options);
         };
@@ -36,9 +37,12 @@ define(
                 if(this.setting.enable) this.model.on('change:'+this._field, this.run, this);
             },
             run: function(model, price){
+                //取点时隔
                 if(--this._interval_runtime) return;
                 this.store(price);
-                this.calculate();
+                _.each(this.setting.algorithms, function(a){
+                    this[a] && this[a](); 
+                }, this);
                 this._interval_runtime = this._interval;
             },
             notify: function(message){
@@ -63,7 +67,7 @@ define(
                 this._points = points;
                 return points;
             },
-            calculate: function(){
+            timChange: function(){
                 if(this._points.length < this.setting.count) return;
                 var points = _.map(this._points, function(p){
                     return p.price;
@@ -98,6 +102,16 @@ define(
                         return (memo && ((memo - p) / memo) >= range) && p;
                     });
                     if(result) return this.notify("报价:" + points.toString());
+                }
+            },
+            limitUp: function(){
+                if( ! this.setting.enable_limitup) return;
+                var sellFive = this.model.get('sellfive'), res = false;
+                _.each(sellFive, function(v, k){
+                    if(v > 0) res = true;
+                });
+                if(res) {
+                    return this.notify("打开涨停:" + sellFive.toString());
                 }
             }
         });
