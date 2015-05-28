@@ -1,0 +1,236 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <style>
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    blockquote {
+        margin: 0;
+        padding: 0;
+    }
+    
+    body {
+        font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;
+        font-size: 13px;
+        line-height: 18px;
+        color: #737373;
+        background-color: white;
+        margin: 10px 13px 10px 13px;
+    }
+    
+    table {
+        margin: 10px 0 15px 0;
+        border-collapse: collapse;
+    }
+    
+    td,
+    th {
+        border: 1px solid #ddd;
+        padding: 3px 10px;
+    }
+    
+    th {
+        padding: 5px 10px;
+    }
+    
+    a {
+        color: #0069d6;
+    }
+    
+    a:hover {
+        color: #0050a3;
+        text-decoration: none;
+    }
+    
+    a img {
+        border: none;
+    }
+    
+    p {
+        margin-bottom: 9px;
+    }
+    
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        color: #404040;
+        line-height: 36px;
+    }
+    
+    h1 {
+        margin-bottom: 18px;
+        font-size: 30px;
+    }
+    
+    h2 {
+        font-size: 24px;
+    }
+    
+    h3 {
+        font-size: 18px;
+    }
+    
+    h4 {
+        font-size: 16px;
+    }
+    
+    h5 {
+        font-size: 14px;
+    }
+    
+    h6 {
+        font-size: 13px;
+    }
+    
+    hr {
+        margin: 0 0 19px;
+        border: 0;
+        border-bottom: 1px solid #ccc;
+    }
+    
+    blockquote {
+        padding: 13px 13px 21px 15px;
+        margin-bottom: 18px;
+        font-family: georgia, serif;
+        font-style: italic;
+    }
+    
+    blockquote:before {
+        content: "\201C";
+        font-size: 40px;
+        margin-left: -10px;
+        font-family: georgia, serif;
+        color: #eee;
+    }
+    
+    blockquote p {
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 18px;
+        margin-bottom: 0;
+        font-style: italic;
+    }
+    
+    code,
+    pre {
+        font-family: Monaco, Andale Mono, Courier New, monospace;
+    }
+    
+    code {
+        background-color: #fee9cc;
+        color: rgba(0, 0, 0, 0.75);
+        padding: 1px 3px;
+        font-size: 12px;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+    }
+    
+    pre {
+        display: block;
+        padding: 14px;
+        margin: 0 0 18px;
+        line-height: 16px;
+        font-size: 11px;
+        border: 1px solid #d9d9d9;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    
+    pre code {
+        background-color: #fff;
+        color: #737373;
+        font-size: 11px;
+        padding: 0;
+    }
+    
+    sup {
+        font-size: 0.83em;
+        vertical-align: super;
+        line-height: 0;
+    }
+    
+    * {
+        -webkit-print-color-adjust: exact;
+    }
+    
+    @media screen and (min-width: 914px) {
+        body {
+            width: 854px;
+            margin: 10px auto;
+        }
+    }
+    
+    @media print {
+        body,
+        code,
+        pre code,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: black;
+        }
+        table,
+        pre {
+            page-break-inside: avoid;
+        }
+    }
+    </style>
+    <title>自选股</title>
+</head>
+
+<body>
+    <h1>自选股</h1>
+    <p>基于Express+Mongodb创作的股票行情提示应用。</p>
+    <h2>特别鸣谢</h2>
+    <p>该应用使用新浪财经股票API提供的实时数据。</p>
+    <h2>用户界面</h2>
+    <h2>算法说明</h2>
+    <p>对于某只个股，系统根据<code>样点时隔</code>设置，每N秒更新一次数据。然后根据<code>取点个数</code>，取最新的X个点进行计算。符合先升后降走势，或先降后升走势的数据，触发警报。</p>
+    <p>例如：</p>
+    <pre><code>中国重工（601989）
+
+设置为：
+    取点个数：5
+    样点更新时隔：30
+    持续上升/下降百分比：0.5
+
+在交易时间的第N个30秒，取出点 15.54, 15.55, 15.56, 15.30, 14.90
+
+1.把点分为两组，A:[15.54, 15.55, 15.56], B:[15.56, 15.30, 14.90]
+2.A组数据符合上升走势，B组数据符合下降走势且下降幅度持续大于0.5%，触发警报。
+</code></pre>
+    <h2>操作说明</h2>
+    <ol>
+        <li>在代码栏输入个股代码，进行搜索，然后选中其中一只股票，添加完成。</li>
+        <li>添加后，在主界面会显示个股的详细信息，当日的实时分时图。</li>
+        <li>每只个股可编辑其提醒设置。
+            <ol>
+                <li>提醒设置：开启/关闭个股提醒；</li>
+                <li>取点个数：取每N个点进行计算是否符合条件；</li>
+                <li>样点更新时隔：每N秒取一次点进行计算，输入数字要求是10的倍数；</li>
+                <li>持续上升/下降百分比：拐点后持续的改变幅度；</li>
+            </ol>
+        </li>
+    </ol>
+    <h2>已知问题</h2>
+    <ol>
+        <li>由于新浪API只提供了即时的股票数据，所以只能够在打开页面时开始保存数据点。当数据点个数达到预设取点个数后才进行运算。</li>
+    </ol>
+</body>
+
+</html>
