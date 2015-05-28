@@ -55,7 +55,10 @@ define(
 
                 //Clear store if last point's date is not equal current date
                 var now = new Date();
-                if((now.getTime() - lastTime) > 10e3) points = [];
+
+                //Clear the localStorage if it more than half hour between the new point and last point
+                if((now.getTime() - lastTime) > 30*60e3) points = [];
+
                 points.push({price: price, time: now.getTime()});
                 if(points.length > this.setting.count) points = points.slice(-this.setting.count);
 
