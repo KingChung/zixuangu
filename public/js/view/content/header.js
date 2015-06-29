@@ -44,7 +44,8 @@ define(
                 this.model.save({setting: data}, {
                     wait: true,
                     success: function(){
-                        Notify.notify('提醒设置', '保存成功!');
+                        var notification = Notify.notify('提醒设置', '保存成功!');
+                        setTimeout(function(){notification.close();}, 2e3);
                         $('#notify_setting').dropdown('toggle');
                     }
                 });
