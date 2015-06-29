@@ -42,7 +42,10 @@ define(
                 this._interval_runtime = this._interval;
             },
             notify: function(message){
-                Notify.notify(this.model.get('display_name'), message);
+                var notification = Notify.notify(this.model.get('display_name'), message);
+                setTimeout(function(){
+                    notification.close();
+                }, 20e3);
             },
             refresh: function(options){
                 this._init(options);
@@ -88,7 +91,7 @@ define(
                         if(!memo) return false;
                         return (memo && ((p - memo) / memo) >= range) && p;
                     });
-                    if(result) return this.notify("报价:" + points.toString());
+                    if(result) return this.notify('时间: ' + (new Date()).toLocaleTimeString() + "\n报价: " + points.toString());
                 }
 
                 //Fall after rising
@@ -100,7 +103,7 @@ define(
                         if(!memo) return false;
                         return (memo && ((memo - p) / memo) >= range) && p;
                     });
-                    if(result) return this.notify("报价:" + points.toString());
+                    if(result) return this.notify('时间: ' + (new Date()).toLocaleTimeString() + "\n报价: " + points.toString());
                 }
             }
         });
